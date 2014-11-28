@@ -1,15 +1,15 @@
 package matrices;
 import pieceWises.BattleFieldPieceWise;
-import exceptions.ExceptionDepassementBornes;
+import exceptions.ExceptionMatrice;
 
 
 public interface InterfaceMatriceCreuse<T> {
 	
-	public void set(int numL, int numC, BattleFieldPieceWise data) throws ExceptionDepassementBornes ;
+	public void set(int i, int j, BattleFieldPieceWise data) throws ExceptionMatrice ;
 	
-	public BattleFieldPieceWise get(int numL, int numC) throws ExceptionDepassementBornes ;
+	public BattleFieldPieceWise get(int i, int j) throws ExceptionMatrice ;
 	
-	public boolean exists(int numL, int numC) ;
+	public boolean exists(int i, int j) ;
 	
 	public int height() ;
 	

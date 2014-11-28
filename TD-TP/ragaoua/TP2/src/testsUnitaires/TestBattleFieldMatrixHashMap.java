@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import pieceWises.*;
-import exceptions.ExceptionDepassementBornes;
+import exceptions.ExceptionMatrice;
 import matrices.BattleFieldMatrixHashMap;
 
 public class TestBattleFieldMatrixHashMap {
@@ -37,7 +37,7 @@ public class TestBattleFieldMatrixHashMap {
 		try{
 			m.set(1, 1, r);
 		}
-		catch(ExceptionDepassementBornes e){
+		catch(ExceptionMatrice e){
 			fail("testSetGet() : Depassement des bornes de la matrice") ;
 		}
 		
@@ -53,7 +53,7 @@ public class TestBattleFieldMatrixHashMap {
 		try{
 			m.set(1, 1, new BattleFieldWater(1, 2));
 		}
-		catch(ExceptionDepassementBornes e){
+		catch(ExceptionMatrice e){
 			fail("testExists() : Depassement des bornes de la matrice") ;
 		}
 		assertTrue(m.exists(1, 1)) ;

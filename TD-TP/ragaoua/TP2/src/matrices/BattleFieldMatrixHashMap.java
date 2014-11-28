@@ -2,7 +2,7 @@ package matrices;
 import java.util.HashMap ;
 
 import pieceWises.BattleFieldPieceWise;
-import exceptions.ExceptionDepassementBornes ;
+import exceptions.ExceptionMatrice ;
 
 /**
  * Cette classe permet de manipuler une matrice pouvant être creuse
@@ -24,12 +24,11 @@ public class BattleFieldMatrixHashMap<T> implements InterfaceMatriceCreuse<T> {
 	 */
 	public BattleFieldMatrixHashMap(int nbL, int nbC){
 		battleField = new HashMap<Integer, HashMap<Integer, BattleFieldPieceWise>>() ;
-		this.nbC = nbC ;
 		this.nbL = nbL ;
+		this.nbC = nbC ;
 	}
 	
 	
-	@Override
 	/**
 	 * Ajoute a la matrice une nouvelle donnee aux coordonnees specifiees
 	 * 
@@ -40,10 +39,10 @@ public class BattleFieldMatrixHashMap<T> implements InterfaceMatriceCreuse<T> {
 	 * @exception ExceptionDepassementBornes si il y a depassement des bornes de la matrice
 	 * 
 	 */
-	public void set(int i, int j, BattleFieldPieceWise data) throws ExceptionDepassementBornes{
+	public void set(int i, int j, BattleFieldPieceWise data) throws ExceptionMatrice{
 		
 		if(i < 0 || i > nbL || j < 0 || j > nbC){
-			throw new ExceptionDepassementBornes("set(i, j, data) : Depassement des bornes de la matrice") ;
+			throw new ExceptionMatrice("set(i, j, data) : Depassement des bornes de la matrice") ;
 		}
 		
 		if(battleField.containsKey(i)){
@@ -67,7 +66,6 @@ public class BattleFieldMatrixHashMap<T> implements InterfaceMatriceCreuse<T> {
 	 * 
 	 * @return La donnee
 	 */
-	@Override
 	public BattleFieldPieceWise get(int i, int j){
 		
 		if(battleField.containsKey(i)){
@@ -85,7 +83,6 @@ public class BattleFieldMatrixHashMap<T> implements InterfaceMatriceCreuse<T> {
 	 * 
 	 * @return Vrai si la donnee existe
 	 */
-	@Override
 	public boolean exists(int i, int j) {
 		
 		if (battleField.containsKey(i)){
@@ -101,7 +98,6 @@ public class BattleFieldMatrixHashMap<T> implements InterfaceMatriceCreuse<T> {
 	 * 
 	 * @return la hauteur
 	 */
-	@Override
 	public int height(){
 		return nbL ;
 	}
@@ -112,7 +108,6 @@ public class BattleFieldMatrixHashMap<T> implements InterfaceMatriceCreuse<T> {
 	 * 
 	 * @return la largeur
 	 */
-	@Override
 	public int width(){
 		return nbC ;
 	}

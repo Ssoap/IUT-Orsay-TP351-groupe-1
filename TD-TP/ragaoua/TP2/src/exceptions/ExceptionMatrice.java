@@ -1,10 +1,10 @@
 package exceptions;
 
-public class ExceptionDepassementBornes extends Exception {
+public class ExceptionMatrice extends Exception {
 	
 	private String msg ;
 	
-	public ExceptionDepassementBornes(String msg){
+	public ExceptionMatrice(String msg){
 		this.msg = msg ;
 	}
 

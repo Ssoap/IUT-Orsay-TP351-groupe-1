@@ -7,7 +7,7 @@ public class BattleFieldLandScape extends BattleFieldPieceWise {
 	}
 	
 	public boolean isCompatible(BattleFieldPieceWise with){
-		return with.getClass() == BattleFieldRoad.class ;
+		return with.getClass() == BattleFieldRoad.class || with.getClass() == BattleFieldLandScape.class ;
 	}
 	
 	public boolean isDestroyable(){
