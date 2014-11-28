@@ -1,0 +1,1 @@
+Le design pattern instancié est le Polymorphism Pattern
