@@ -6,7 +6,7 @@ import matrices.BattleFieldMatrixArrayList;
 import org.junit.Test;
 
 import pieceWises.*;
-import exceptions.ExceptionDepassementBornes;
+import exceptions.ExceptionMatrice;
 
 public class TestBattleFieldMatrixArrayList {
 
@@ -39,7 +39,7 @@ public class TestBattleFieldMatrixArrayList {
 			assertTrue(m.get(1, 1).equals(r)) ;
 			assertNull(m.get(2, 1)) ;
 		}
-		catch(ExceptionDepassementBornes e){
+		catch(ExceptionMatrice e){
 			fail("testSetGet() : Depassement des bornes de la matrice") ;
 		}
 		
@@ -52,7 +52,7 @@ public class TestBattleFieldMatrixArrayList {
 		try{
 			m.set(1, 1, new BattleFieldLandScape(1, 2));
 		}
-		catch(ExceptionDepassementBornes e){
+		catch(ExceptionMatrice e){
 			fail("testExists() : Depassement des bornes de la matrice") ;
 		}
 		assertTrue(m.exists(1, 1)) ;

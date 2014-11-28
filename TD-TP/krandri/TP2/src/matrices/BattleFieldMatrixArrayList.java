@@ -2,7 +2,7 @@ package matrices;
 import java.util.ArrayList;
 
 import pieceWises.BattleFieldPieceWise;
-import exceptions.ExceptionDepassementBornes ;
+import exceptions.ExceptionMatrice ;
 
 /**
  * Cette classe permet de manipuler une matrice pouvant être creuse
@@ -45,11 +45,10 @@ public class BattleFieldMatrixArrayList<T> implements InterfaceMatriceCreuse<T> 
 	 * @exception ExceptionDepassementBornes si il y a depassement des bornes de la matrice
 	 * 
 	 */
-	@Override
-	public void set(int i, int j, BattleFieldPieceWise data) throws ExceptionDepassementBornes {
+	public void set(int i, int j, BattleFieldPieceWise data) throws ExceptionMatrice {
 		
 		if(i < 0 || i >= nbL || j < 0 || j >= nbC){
-			throw new ExceptionDepassementBornes("Erreur") ;
+			throw new ExceptionMatrice("Erreur") ;
 		}
 		battleField.get(i).set(j, data) ;
 	
@@ -66,11 +65,10 @@ public class BattleFieldMatrixArrayList<T> implements InterfaceMatriceCreuse<T> 
 	 * 
 	 * @return La donnee
 	 */
-	@Override
-	public BattleFieldPieceWise get(int i, int j) throws ExceptionDepassementBornes {
+	public BattleFieldPieceWise get(int i, int j) throws ExceptionMatrice {
 		
 		if(i < 0 || i >= nbL || j < 0 || j >= nbC){
-			throw new ExceptionDepassementBornes("Erreur") ;
+			throw new ExceptionMatrice("Erreur") ;
 		}
 		return battleField.get(i).get(j) ;
 		
@@ -82,7 +80,6 @@ public class BattleFieldMatrixArrayList<T> implements InterfaceMatriceCreuse<T> 
 	 * 
 	 * @return Vrai si la donnee existe
 	 */
-	@Override
 	public boolean exists(int i, int j) {
 		
 		return battleField.get(i).get(j) != null ;
@@ -95,7 +92,6 @@ public class BattleFieldMatrixArrayList<T> implements InterfaceMatriceCreuse<T> 
 	 * 
 	 * @return la hauteur
 	 */
-	@Override
 	public int height(){
 		return nbL ;
 	}
@@ -106,7 +102,6 @@ public class BattleFieldMatrixArrayList<T> implements InterfaceMatriceCreuse<T> 
 	 * 
 	 * @return la largeur
 	 */
-	@Override
 	public int width(){
 		return nbC ;
 	}
