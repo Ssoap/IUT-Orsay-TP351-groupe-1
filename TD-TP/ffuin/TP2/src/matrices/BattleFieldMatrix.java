@@ -3,7 +3,7 @@ package matrices;
 import java.util.*;
 import exceptions.ExceptionMatrice;
 
-public class BattleFieldMatrix<BattleFieldPieceWise>{
+public class BattleFieldMatrix<BattleFieldPieceWise> implements MatriceCreuseInterface{
 	
 	private ArrayList<ArrayList<BattleFieldPieceWise>> matrice;
 	private int ligne;
