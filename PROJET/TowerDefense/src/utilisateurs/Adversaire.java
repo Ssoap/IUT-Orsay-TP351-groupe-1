@@ -10,12 +10,22 @@ public class Adversaire extends Utilisateur{
 	public Adversaire(String pseudo){
 		super(pseudo) ;
 		sesMonstres = new ArrayList<MonstreAdverse>() ;
-		miseAjourGold() ;
 	}
-
-	@Override
-	public void miseAjourGold() {
-		// RESEAU
+	
+	public void setPv(int pv){
+		this.pv = pv ;
+	}
+	
+	public ArrayList<MonstreAdverse> getSesMonstres(){
+		return sesMonstres ;
+	}
+	
+	public void addMonstre(MonstreAdverse m){
+		sesMonstres.add(m) ;
+	}
+	
+	public void tuerMonstre(MonstreAdverse m){
+		sesMonstres.remove(m) ;
 	}
 	
 }

@@ -9,6 +9,4 @@ public abstract class Utilisateur {
 		this.pseudo = pseudo ;
 	}
 	
-	public abstract void miseAjourGold() ;
-	
 }
