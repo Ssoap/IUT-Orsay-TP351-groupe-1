@@ -1,14 +1,13 @@
 package modele;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import monstres.MonstreAdverse;
+import terrain.Case;
 import terrain.Position;
 import terrain.Terrain;
 import tourelles.Tourelle;
 import utilisateurs.Adversaire;
 import utilisateurs.Joueur;
+
 import communicationReseau.Serveur;
 
 public class Modele {
@@ -39,6 +38,23 @@ public class Modele {
 		// faire avancer les monstres (rendre "fous" ceux qui ne peuvent pas avancer)
 	}
 	
+	public void ameliorerTourelle(Position p){
+		joueur.getTerrain().get(p).getSaTourelle().ameliorer() ;
+	}
+	
+	public boolean caseVide(Position p){
+		Case c = joueur.getTerrain().get(p) ;
+		return c.vide() ;
+	}
+	
+	public String getTypeTourelle(Position p){
+		Case c = joueur.getTerrain().get(p) ;
+		return c.getSaTourelle().getType() ;
+	}
+	
+	public Tourelle getTourelle(Position p){
+		return joueur.getTerrain().get(p).getSaTourelle() ;
+	}
 	
 	public void ajouterMonstreAdverse(MonstreAdverse m){
 		m.asservir(adversaire) ;

@@ -1,5 +1,6 @@
 package vues;
 
+import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +11,8 @@ import javax.swing.JLabel;
 
 public class Dessin extends JLabel {
 	
-	private Image image ;
+	private Image imageTerrain ;
+	private Image imageTour ;
 	private int hauteur ;
 	private int largeur ;
 	
@@ -40,8 +42,9 @@ public class Dessin extends JLabel {
 		}
 		
 		try {
-			image = ImageIO.read(new File(cheminImage));
-			this.setIcon(new ImageIcon(image.getScaledInstance(largeur, hauteur, Image.SCALE_DEFAULT)));
+			Image image = ImageIO.read(new File(cheminImage)).getScaledInstance(largeur, hauteur, Image.SCALE_DEFAULT);
+			if(type.startsWith("tourelle")) this.imageTour = image;
+			else this.imageTerrain = image;
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -68,8 +71,9 @@ public class Dessin extends JLabel {
 		}
 		
 		try {
-			image = ImageIO.read(new File(cheminImage));
-			this.setIcon(new ImageIcon(image.getScaledInstance(largeur, hauteur, Image.SCALE_DEFAULT)));
+			Image image = ImageIO.read(new File(cheminImage)).getScaledInstance(largeur, hauteur, Image.SCALE_DEFAULT);
+			if(typeImage.startsWith("tourelle")) this.imageTour = image;
+			else this.imageTerrain = image;
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -80,7 +84,15 @@ public class Dessin extends JLabel {
 	public void redimensionner(int hauteur, int largeur){
 		this.hauteur = hauteur ;
 		this.largeur = largeur ;
-		System.out.println("ok");
-		this.setIcon(new ImageIcon(image.getScaledInstance(largeur, hauteur, Image.SCALE_DEFAULT)));
+		if(imageTerrain!=null) imageTerrain = imageTerrain.getScaledInstance(largeur, hauteur, Image.SCALE_DEFAULT);
+		if(imageTour!=null) imageTour = imageTour.getScaledInstance(largeur, hauteur, Image.SCALE_DEFAULT);
+
+	}
+	
+	public void paintComponent(Graphics g)
+	{
+		g.clearRect(0, 0, getWidth(), getHeight());
+		if(imageTerrain !=null) g.drawImage(imageTerrain, 0, 0,  null);
+		if(imageTour !=null)  g.drawImage(imageTour, 0, 0,  null);
 	}
 }

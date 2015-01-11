@@ -13,8 +13,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.border.BevelBorder;
 
-import terrain.Case;
 import terrain.Position;
 
 
@@ -31,6 +31,7 @@ public class Vue extends JFrame{
 	
 	private JPanel pnlInfosTourelle ;
 	private JLabel lblInfosTourelle ;
+	private JButton btnAmeliorer ;
 	
 	private JPanel pnlInfosJoueur ;
 	private JLabel lblPseudo ;
@@ -40,9 +41,6 @@ public class Vue extends JFrame{
 	
 	private JPanel pnlMap;
 
-	private JLabel caseSelectionnee ;
-	private String tourelleSelectionnee ;
-	private HashMap<String, JButton> hashTourelleBouton ;
 	
  	public Vue(int nbCasesHauteur, int nbCasesLargeur, String pseudo, int pv, int gold, int pvAdversaire){
 		
@@ -60,10 +58,17 @@ public class Vue extends JFrame{
 		pnlInfos.setLayout(new GridLayout(2, 1));
 		
 		pnlInfosTourelle = new JPanel() ;
+		pnlInfosTourelle.setLayout(new BorderLayout());
 		pnlInfosTourelle.setBackground(new Color(0, 50, 100));
 		lblInfosTourelle = new JLabel() ;
 		lblInfosTourelle.setForeground(Color.WHITE);
-		pnlInfosTourelle.add(lblInfosTourelle) ;
+		lblInfosTourelle.setText("Aucune tourelle selectionnée");
+		
+		btnAmeliorer = new JButton("Améliorer") ;
+		btnAmeliorer.setEnabled(false);
+		
+		pnlInfosTourelle.add(lblInfosTourelle, BorderLayout.CENTER) ;
+		pnlInfosTourelle.add(btnAmeliorer, BorderLayout.SOUTH) ;
 		
 		pnlInfosJoueur = new JPanel() ;
 		pnlInfosJoueur.setBackground(new Color(0, 0, 0, 0));
@@ -110,8 +115,6 @@ public class Vue extends JFrame{
 		this.getContentPane().setLayout(new BorderLayout());
 		this.add(pnlMap, BorderLayout.CENTER);
 		this.add(pnlGestion, BorderLayout.EAST);
-		
-		hashTourelleBouton = new HashMap<String, JButton>() ;
 	
 	}
 	
@@ -125,47 +128,6 @@ public class Vue extends JFrame{
 	
 	public void majPvAdversaire(int pvAdverseaire){
 		lblPvAdversaire.setText("pv adverses : " + pvAdverseaire) ;
-	}
-
-	public void deselectionnerTourelle(){
-		hashTourelleBouton.get(this.tourelleSelectionnee).setText("Acheter") ;
-		this.tourelleSelectionnee = null ;
-	}
-	
-	public String getTourelleSelectionnee(){
-		return tourelleSelectionnee ;
-	}
-
-	public void clickBtnAchatTour(String typeTourelle){
-
-		if(this.tourelleSelectionnee == typeTourelle){
-			this.tourelleSelectionnee = null ;
-			this.hashTourelleBouton.get(typeTourelle).setText("Acheter") ;
-		}
-		else{
-			if(this.tourelleSelectionnee != null){
-				this.hashTourelleBouton.get(this.tourelleSelectionnee).setText("Acheter") ;
-			}
-			this.tourelleSelectionnee = typeTourelle ;
-			this.hashTourelleBouton.get(typeTourelle).setText("Annuler achat") ;
-		}
-	}
-	
-	public void selectionnerCase(JLabel caseSelectionnee){
-
-		if(this.caseSelectionnee == caseSelectionnee){
-			this.caseSelectionnee.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-			this.caseSelectionnee = null ;
-			lblInfosTourelle.setText("ok");
-		}
-		else{
-			if(this.caseSelectionnee != null){
-				this.caseSelectionnee.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-			}
-			this.caseSelectionnee= caseSelectionnee ;
-			this.caseSelectionnee.setBorder(BorderFactory.createLineBorder(Color.RED));
-			lblInfosTourelle.setText("case selectionnée") ;
-		}
 	}
 	
 	public void definirNbMonstres(int nbMonstres){
@@ -185,47 +147,13 @@ public class Vue extends JFrame{
 	    JLabel InfosMonstre = new JLabel();
 	    InfosMonstre.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 	    
-	    String infos = "<html>Type : " + type + "<br>";
-	    int k = 0 ;
-	    infos += "Cout : " ;
-	    while(informations.charAt(k) != ':'){
-	    	infos += informations.charAt(k);
-	    	k++ ;
-	    }
-    	k++ ;
-	    infos += "<br>" ;
-	    infos += "Income : " ;
-	    while(informations.charAt(k) != ':'){
-	    	infos += informations.charAt(k);
-	    	k++ ;
-	    }
-    	k++ ;
-	    infos += "<br>" ;
-	    infos += "Pv : " ;
-	    while(informations.charAt(k) != ':'){
-	    	infos += informations.charAt(k);
-	    	k++ ;
-	    }
-    	k++ ;
-	    infos += "<br>" ;
-	    infos += "MS : " ;
-	    while(informations.charAt(k) != ':'){
-	    	infos += informations.charAt(k);
-	    	k++ ;
-	    }
-    	k++ ;
-	    infos += "<br>" ;
-	    infos += "DPS : " ;
-	    while(informations.charAt(k) != ':'){
-	    	infos += informations.charAt(k);
-	    	k++ ;
-	    }
-	    infos += "</html>" ;
-	    
-	    InfosMonstre.setText(infos);
+	    InfosMonstre.setText(informations);
 	    InfosMonstre.setForeground(Color.white);
 	    
 	    dessin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+	    dessin.setMinimumSize(new Dimension(100,50));
+	    dessin.setPreferredSize(new Dimension(100,50));
+	    
 	    JButton btnAchatMonstre = new JButton("acheter et envoyer") ;
 	    btnAchatMonstre.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 	    pnlMonstre.add(dessin, BorderLayout.NORTH) ;
@@ -247,41 +175,13 @@ public class Vue extends JFrame{
 	    JLabel InfosTourelle = new JLabel();
 	    InfosTourelle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 	    
-	    String infos = "<html>Type : " + type + "<br>";
-	    int k = 0 ;
-	    infos += "Cout : " ;
-	    while(informations.charAt(k) != ':'){
-	    	infos += informations.charAt(k);
-	    	k++ ;
-	    }
-    	k++ ;
-	    infos += "<br>" ;
-	    infos += "Portee : " ;
-	    while(informations.charAt(k) != ':'){
-	    	infos += informations.charAt(k);
-	    	k++ ;
-	    }
-    	k++ ;
-	    infos += "<br>" ;
-	    infos += "Dommages : " ;
-	    while(informations.charAt(k) != ':'){
-	    	infos += informations.charAt(k);
-	    	k++ ;
-	    }
-    	k++ ;
-	    infos += "<br>" ;
-	    infos += "AS : " ;
-	    while(informations.charAt(k) != ':'){
-	    	infos += informations.charAt(k);
-	    	k++ ;
-	    }
-	    infos += "</html>" ;
-	    
-	    
-	    InfosTourelle.setText(infos);
+	    InfosTourelle.setText(informations);
 	    InfosTourelle.setForeground(Color.white);
 	    
 	    dessin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+	    dessin.setMinimumSize(new Dimension(100,50));
+	    dessin.setPreferredSize(new Dimension(100,50));
+	    dessin.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 	    JButton btnAchatTourelle = new JButton("Acheter") ;
 	    btnAchatTourelle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 	    
@@ -290,8 +190,6 @@ public class Vue extends JFrame{
 	    pnlTourelle.add(btnAchatTourelle, BorderLayout.SOUTH);
 		
 		((JPanel)pnlOnglets.getComponentAt(1)).add(pnlTourelle);
-		
-		hashTourelleBouton.put(type, btnAchatTourelle) ;
 		
 		return btnAchatTourelle ;
 	}
@@ -310,6 +208,10 @@ public class Vue extends JFrame{
 		}
 	}
 	
+	public JButton getBtnAmeliorer(){
+		return btnAmeliorer ;
+	}
+	
 	public int getHauteurMap(){
 		return pnlMap.getHeight() ;
 	}
@@ -318,4 +220,8 @@ public class Vue extends JFrame{
 		return pnlMap.getWidth() ;
 	}
 
+	public void majInfosTourelle(String infos){
+		lblInfosTourelle.setText(infos);
+	}
+	
 }

@@ -56,7 +56,7 @@ public class Tourelle {
 			case "tourelle_basique" :
 				this.portee = PORTEE_INITIALE_TOURELLE_BASIQUE ;
 				this.dommages = DOMMAGES_INITIAUX_TOURELLE_BASIQUE ;
-				this.attackSpeed = DOMMAGES_INITIAUX_TOURELLE_BASIQUE ;
+				this.attackSpeed = ATTACK_SPEED_INITIALE_TOURELLE_BASIQUE ;
 				break ;
 			case "tourelle_puissante" :
 				this.portee = PORTEE_INITIALE_TOURELLE_PUISSANTE ;
@@ -127,6 +127,14 @@ public class Tourelle {
 	
 	public int getPortee(){
 		return portee ;
+	}
+	
+	public int getDommages(){
+		return dommages ;
+	}
+	
+	public int getAS(){
+		return attackSpeed ;
 	}
 	
 	
