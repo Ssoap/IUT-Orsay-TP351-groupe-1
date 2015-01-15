@@ -101,6 +101,9 @@ public class Tourelle {
 		this.amelioree = true ;
 	}
 	
+	public boolean isAmelioree(){
+		return amelioree ;
+	}
 	
 	public int prix(){
 		switch(type){

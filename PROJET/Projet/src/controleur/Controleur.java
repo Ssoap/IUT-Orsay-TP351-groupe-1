@@ -44,7 +44,7 @@ public class Controleur {
 	
 	public Controleur(){
 		modele = new Modele("Ssoap") ;
-		vue = new Vue(Modele.HAUTEUR_TERRAIN, Modele.LARGEUR_TERRAIN, modele.getPseudoJoueur(), modele.getPvJoueur(), modele.getGoldJoueur()) ;
+		vue = new Vue(Modele.HAUTEUR_TERRAIN, Modele.LARGEUR_TERRAIN, modele.getPvJoueur(), modele.getGoldJoueur()) ;
 		timerRunning = false ;
 		stopTimerNextTic = false ;
 		hashPosCase = new HashMap<Position, Dessin>() ;
@@ -96,8 +96,14 @@ public class Controleur {
 						}
 						
 						if(!modele.caseVide(posCase)){
-							vue.majInfosTourelle(infosTourelle(posCase));
-							vue.getBtnAmeliorer().setEnabled(true) ;
+							if(modele.getCase(posCase).getSaTourelle().isAmelioree()){
+								vue.majInfosTourelle(infosTourelle(posCase));
+								vue.getBtnAmeliorer().setEnabled(false) ;
+							}
+							else{
+								vue.majInfosTourelle(infosTourelle(posCase));
+								vue.getBtnAmeliorer().setEnabled(true) ;
+							}
 						}
 						else{
 							vue.majInfosTourelle("aucune tourelle selectionnée");
@@ -116,7 +122,9 @@ public class Controleur {
 				int y = ((int)caseSelectionnee.getY()) / Case.getHauteur() ;
 				Position posCase = new Position(x, y) ;
 				if(modele.ameliorerTourelle(posCase)){
+					vue.majInfosTourelle(infosTourelle(posCase));
 					vue.majGoldJoueur(modele.getGoldJoueur());
+					((JButton)e.getSource()).setEnabled(false) ;
 				}
 				else{
 					vue.message("Amelioration impossible", "Vous n'avez pas assez de gold", JOptionPane.WARNING_MESSAGE);
@@ -192,7 +200,7 @@ public class Controleur {
 			public void run(){
 				tic() ;
 			}
-		}, 1000, 1000);
+		}, 1000, 100);
 	}
 	
 	private void tic(){
@@ -210,6 +218,7 @@ public class Controleur {
 			hashPosCase.get(c.getT1()).ajouter(c.getT2()) ;
 			hashPosCase.get(c.getT1()).repaint() ;
 		}
+		vue.majPvJoueur(modele.getPvJoueur());
 		modele.faireAttaquerTourelles();
 		
 		if(cptVague < 10){
@@ -246,8 +255,12 @@ public class Controleur {
 	private String infosTourelle(Position p){
 		
 		Tourelle t = modele.getTourelle(p) ;
+		String amelioree = "" ;
+		if(t.isAmelioree()){
+			amelioree = " (ameliorée)" ;
+		}
 
-		return "<html>Type : " + t.getType() + "<br>Portee : " + t.getPortee() + "<br>Dommages : " + t.getDommages() + "<br>AS : " + t.getAS() + "</html>";
+		return "<html>Type : " + t.getType() + amelioree + "<br>Portee : " + t.getPortee() + "<br>Dommages : " + t.getDommages() + "<br>AS : " + t.getAS() + "</html>";
 		
 	}
 	

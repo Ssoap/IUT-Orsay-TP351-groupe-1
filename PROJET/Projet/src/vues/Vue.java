@@ -36,7 +36,6 @@ public class Vue extends JFrame{
 	private JButton btnAmeliorer ;
 	
 	private JPanel pnlInfosJoueur ;
-	private JLabel lblPseudo ;
 	private JLabel lblPv ;
 	private JLabel lblGold ;
 	
@@ -44,7 +43,7 @@ public class Vue extends JFrame{
 	private HashMap<Position, Dessin> cases ;
 
 	
- 	public Vue(int nbCasesHauteur, int nbCasesLargeur, String pseudo, int pv, int gold){
+ 	public Vue(int nbCasesHauteur, int nbCasesLargeur, int pv, int gold){
 		
 		super("Tower defense") ;
 		
@@ -76,10 +75,6 @@ public class Vue extends JFrame{
 		
 		pnlInfosJoueur = new JPanel() ;
 		pnlInfosJoueur.setBackground(new Color(0, 50, 100));
-		lblPseudo = new JLabel() ;
-		lblPseudo.setForeground(Color.WHITE);
-		lblPseudo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER) ;
-		lblPseudo.setText("Pseudo : " + pseudo) ;
 		lblPv = new JLabel() ;
 		lblPv.setForeground(Color.WHITE);
 		lblPv.setHorizontalAlignment(javax.swing.SwingConstants.CENTER) ;
@@ -88,8 +83,7 @@ public class Vue extends JFrame{
 		lblGold.setForeground(Color.WHITE);
 		lblGold.setHorizontalAlignment(javax.swing.SwingConstants.CENTER) ;
 		majGoldJoueur(gold) ;
-		pnlInfosJoueur.setLayout(new GridLayout(3,1)) ;
-		pnlInfosJoueur.add(lblPseudo) ;
+		pnlInfosJoueur.setLayout(new GridLayout(2,1)) ;
 		pnlInfosJoueur.add(lblPv) ;
 		pnlInfosJoueur.add(lblGold) ;
 		

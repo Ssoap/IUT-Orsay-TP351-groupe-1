@@ -86,6 +86,7 @@ public class Modele {
 			m.avancer() ;
 			if(m.getPos().equals(joueur.getTerrain().getPosBase())){
 				ontAtteintLaBase.add(m);
+				joueur.blesserBase();
 			}
 			newPositionsTypesMonstre.add(new Couple<Position, String>(m.getPos(), m.getType())) ;
 		}
@@ -95,6 +96,10 @@ public class Modele {
 		return newPositionsTypesMonstre ;
 	}
 
+	public Case getCase(Position p){
+		return joueur.getTerrain().get(p) ;
+	}
+	
 	public Position getPosBase(){
 		return joueur.getTerrain().getPosBase() ;
 	}
