@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
-import monstres.MonstreAdverse;
+import monstres.Monstre;
 import terrain.Case;
 import terrain.Position;
 import terrain.Terrain;
 import tourelles.Tourelle;
 import utilisateurs.Adversaire;
 import utilisateurs.Joueur;
-import communicationReseau.Serveur;
 import couple.Couple;
 import dijkstra.Arc;
 import dijkstra.DijkstraAlgorithm;
@@ -22,16 +21,12 @@ public class Modele {
 	public final static int HAUTEUR_TERRAIN = 15 ;
 	public final static int LARGEUR_TERRAIN = 20 ;
 	
-	private Serveur serveur ;
 	private Joueur joueur ;
 	private Adversaire adversaire ;
 	
 	public Modele(String pseudoJoueur){
 		joueur = new Joueur(pseudoJoueur, new Terrain(HAUTEUR_TERRAIN, LARGEUR_TERRAIN)) ;
-		//serveur = new Serveur(this) ;
-		//String pseudoAdversaire = serveur.getPseudoAdversaire() ; ;
-		adversaire = new Adversaire(""/*pseudoAdversaire*/) ;
-		//adversaire.setPv(serveur.getPvAdversaire()) ;
+		adversaire = new Adversaire() ;
 	}
 	
 	public void majGold(){
@@ -39,23 +34,65 @@ public class Modele {
 	}
 		
 	public void faireAttaquerTourelles(){
-		joueur.getTerrain().faireAttaquerTourelles(adversaire.getSesMonstres()) ;
-	}
-	
-	public ArrayList<Couple<Position, Position>> faireAvancerMonstres() {
-		ArrayList<Couple<Position, Position>> OldAndNewPositions = new ArrayList<Couple<Position, Position>>() ;
-		for(MonstreAdverse m : adversaire.getSesMonstres()){
-			Couple<Position, Position> c = new Couple<Position, Position>() ;
-			c.setT1(m.getPos()) ;
-			m.avancer() ;
-			c.setT2(m.getPos());
-			OldAndNewPositions.add(c) ;
+		Terrain terrain = joueur.getTerrain() ;
+		
+		Set<Position> cles = terrain.keySet();
+		Iterator<Position> it = cles.iterator() ;
+		while(it.hasNext()){
+			Position p = it.next() ;
+			Case c = terrain.get(p) ;
+			
+			if(!c.vide()){
+				 // On recupere la portee en pixels
+				int porteeHauteur = c.getSaTourelle().getPortee()*Case.getHauteur() ;
+				int porteeLargeur = c.getSaTourelle().getPortee()*Case.getLargeur() ;
+				// On va stocker les monstres à portee
+				ArrayList<Monstre> monstresAportee = new ArrayList<Monstre>() ;
+				
+				for(int i = (p.getY()*Case.getHauteur()-porteeHauteur) ; i <= (p.getY()*Case.getHauteur()+porteeHauteur) ; i+=Case.getHauteur()){
+					if(i>=0){
+						for(int j = (p.getX()*Case.getLargeur()-porteeLargeur) ; j <= (p.getX()*Case.getLargeur()+porteeLargeur) ; j+=Case.getLargeur()){
+							if(j>=0){
+								for(Monstre m : adversaire.getSesMonstres()){
+									Position posCaseMonstre = new Position( m.getPos().getY()*Case.getHauteur() , m.getPos().getX()*Case.getLargeur()) ;
+									if(posCaseMonstre.equals(new Position(i, j))){
+										monstresAportee.add(m) ;
+									}
+								}
+							}
+						}
+					}
+				}
+				if(monstresAportee.size() > 0){
+					Monstre cible = Monstre.lePlusFaible(monstresAportee) ;
+					c.getSaTourelle().attaquer(cible) ;
+					if(cible.getPv() <= 0){
+						joueur.augmenterGold(cible.getGainDestruction());
+						adversaire.tuerMonstre(cible);
+					}
+				}
+			}
 		}
-		return OldAndNewPositions ;
 	}
 	
-	public Position getPosSpawn(){
-		return joueur.getTerrain().getPosSpawn() ;
+	public Position randomSpawn(){
+		return joueur.getTerrain().randomSpawn() ;
+	}
+	
+	public ArrayList<Couple<Position, String>> faireAvancerMonstres() {
+		ArrayList<Couple<Position, String>> newPositionsTypesMonstre = new ArrayList<Couple<Position, String>>() ;
+		ArrayList<Monstre> ontAtteintLaBase = new ArrayList<Monstre>() ;
+		for(Monstre m : adversaire.getSesMonstres()){
+			m.avancer() ;
+			if(m.getPos().equals(joueur.getTerrain().getPosBase())){
+				ontAtteintLaBase.add(m);
+			}
+			newPositionsTypesMonstre.add(new Couple<Position, String>(m.getPos(), m.getType())) ;
+		}
+		for(Monstre m : ontAtteintLaBase){
+			adversaire.tuerMonstre(m);
+		}
+		return newPositionsTypesMonstre ;
 	}
 
 	public Position getPosBase(){
@@ -90,8 +127,7 @@ public class Modele {
 		return joueur.getTerrain().get(p).getSaTourelle() ;
 	}
 	
-	public void ajouterMonstreAdverse(MonstreAdverse m){
-		m.asservir(adversaire) ;
+	public void ajouterMonstre(Monstre m){
 		adversaire.addMonstre(m) ;
 	}
 	
@@ -110,11 +146,7 @@ public class Modele {
 	public int getPvJoueur(){
 		return joueur.getPv() ;
 	}
-	
-	public int getPvAdversaire(){
-		return 0 ;
-	}
-	
+
 	public String getTypeCase(Position p){
 		return joueur.getTerrain().getTypeCase(p) ;
 	}
@@ -123,8 +155,8 @@ public class Modele {
 		return joueur.getTerrain().get(p).getSaTourelle().getType() ;
 	}
 	
-	public void definirCheminMonstres(){
-		for(MonstreAdverse m : adversaire.getSesMonstres()){
+	public void definirCheminsMonstres(){
+		for(Monstre m : adversaire.getSesMonstres()){
 			Graphe graphe = terrainToGraphe() ;
 			DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graphe);
 			dijkstra.execute(m.getPos()) ;
@@ -132,6 +164,10 @@ public class Modele {
 			chemin.remove(0);
 			m.definirChemin(chemin) ;
 		}
+	}
+	
+	public boolean tousMonstresMorts(){
+		return adversaire.getSesMonstres().isEmpty() ;
 	}
 	
 	private Graphe terrainToGraphe(){

@@ -1,6 +1,5 @@
 package terrain;
 
-import monstres.MonstreAdverse;
 import tourelles.Tourelle;
 
 public class Case {
@@ -46,10 +45,6 @@ public class Case {
 	
 	public Tourelle getSaTourelle(){
 		return saTourelle ;
-	}
-	
-	public void faireAttaquerTourelle(MonstreAdverse m){
-		saTourelle.attaquer(m);
 	}
 	
 	public static int getHauteur(){

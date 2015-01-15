@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.HashMap;
 
@@ -38,13 +39,12 @@ public class Vue extends JFrame{
 	private JLabel lblPseudo ;
 	private JLabel lblPv ;
 	private JLabel lblGold ;
-	private JLabel lblPvAdversaire ;
 	
 	private JPanel pnlMap;
 	private HashMap<Position, Dessin> cases ;
 
 	
- 	public Vue(int nbCasesHauteur, int nbCasesLargeur, String pseudo, int pv, int gold, int pvAdversaire){
+ 	public Vue(int nbCasesHauteur, int nbCasesLargeur, String pseudo, int pv, int gold){
 		
 		super("Tower defense") ;
 		
@@ -75,7 +75,7 @@ public class Vue extends JFrame{
 		pnlInfosTourelle.add(btnAmeliorer, BorderLayout.SOUTH) ;
 		
 		pnlInfosJoueur = new JPanel() ;
-		pnlInfosJoueur.setBackground(new Color(0, 0, 0, 0));
+		pnlInfosJoueur.setBackground(new Color(0, 50, 100));
 		lblPseudo = new JLabel() ;
 		lblPseudo.setForeground(Color.WHITE);
 		lblPseudo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER) ;
@@ -88,15 +88,10 @@ public class Vue extends JFrame{
 		lblGold.setForeground(Color.WHITE);
 		lblGold.setHorizontalAlignment(javax.swing.SwingConstants.CENTER) ;
 		majGoldJoueur(gold) ;
-		lblPvAdversaire = new JLabel() ;
-		lblPvAdversaire.setForeground(Color.WHITE);
-		lblPvAdversaire.setHorizontalAlignment(javax.swing.SwingConstants.CENTER) ;
-		majPvAdversaire(pvAdversaire) ;
-		pnlInfosJoueur.setLayout(new GridLayout(4,1)) ;
+		pnlInfosJoueur.setLayout(new GridLayout(3,1)) ;
 		pnlInfosJoueur.add(lblPseudo) ;
 		pnlInfosJoueur.add(lblPv) ;
 		pnlInfosJoueur.add(lblGold) ;
-		pnlInfosJoueur.add(lblPvAdversaire) ;
 		
 		pnlInfos.add(pnlInfosTourelle, BorderLayout.CENTER) ;
 		pnlInfos.add(pnlInfosJoueur, BorderLayout.SOUTH) ;
@@ -130,19 +125,30 @@ public class Vue extends JFrame{
 		lblGold.setText("Gold : " + gold) ;
 	}
 	
-	public void majPvAdversaire(int pvAdverseaire){
-		lblPvAdversaire.setText("pv adverses : " + pvAdverseaire) ;
-	}
-	
-	public void definirNbMonstres(int nbMonstres){
-		((JPanel)pnlOnglets.getComponentAt(0)).setLayout(new GridLayout(nbMonstres, 1)) ;
+	public JButton definirNbMonstres(int nbMonstres){
+		
+		JLabel lbl = new JLabel("Infos monstres") ;
+		lbl.setFont(new Font("Arial", Font.BOLD, 15));
+		lbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		
+		JButton btnNewVague = new JButton("Prochaine vague") ;
+		
+		JPanel pnlMonstres = new JPanel();
+		pnlMonstres.setLayout(new GridLayout(nbMonstres, 1));
+		
+		((JPanel)pnlOnglets.getComponentAt(0)).setLayout(new BorderLayout()) ;
+		((JPanel)pnlOnglets.getComponentAt(0)).add(lbl, BorderLayout.NORTH) ;
+		((JPanel)pnlOnglets.getComponentAt(0)).add(pnlMonstres, BorderLayout.CENTER) ;
+		((JPanel)pnlOnglets.getComponentAt(0)).add(btnNewVague, BorderLayout.SOUTH) ;
+		
+		return btnNewVague ;
 	}
 	
 	public void definirNbTourelles(int nbTourelles){
 		((JPanel)pnlOnglets.getComponentAt(1)).setLayout(new GridLayout(nbTourelles, 1)) ;
 	}
 	
-	public JButton ajouterTypeMonstre(String type, String informations, Dessin dessin){
+	public void ajouterTypeMonstre(String type, String informations, Dessin dessin){
 		JPanel pnlMonstre = new JPanel();
 		pnlMonstre.setBackground(new Color(0,45,90));
 		pnlMonstre.setLayout(new BorderLayout()) ;
@@ -158,15 +164,10 @@ public class Vue extends JFrame{
 	    dessin.setMinimumSize(new Dimension(100,50));
 	    dessin.setPreferredSize(new Dimension(100,50));
 	    
-	    JButton btnAchatMonstre = new JButton("acheter et envoyer") ;
-	    btnAchatMonstre.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 	    pnlMonstre.add(dessin, BorderLayout.NORTH) ;
 	    pnlMonstre.add(InfosMonstre, BorderLayout.CENTER);
-		pnlMonstre.add(btnAchatMonstre, BorderLayout.SOUTH);
 		
-		((JPanel)pnlOnglets.getComponentAt(0)).add(pnlMonstre);
-		
-		return btnAchatMonstre ;
+		((JPanel)((JPanel)pnlOnglets.getComponentAt(0)).getComponent(1)).add(pnlMonstre);
 	}
 	
 	public JButton ajouterTypeTourelle(String type, String informations, Dessin dessin){
@@ -230,7 +231,7 @@ public class Vue extends JFrame{
 	}
 	
 	public void message(String titre, String msg, int type){
-		new JOptionPane().showMessageDialog(null, msg, titre, type);
+		JOptionPane.showMessageDialog(null, msg, titre, type);
 	}
 
 	public void majInfosTourelle(String infos){

@@ -1,9 +1,5 @@
 package utilisateurs;
 
-import java.util.ArrayList;
-
-import monstres.MonstreAdverse;
-import monstres.MonstreAllie;
 import terrain.Position;
 import terrain.Terrain;
 import tourelles.Tourelle;
@@ -16,14 +12,12 @@ public class Joueur extends Utilisateur {
 
 	private int gold ;
 	private Terrain terrain ;
-	private ArrayList<MonstreAllie> sesMonstres ;
 	
 	public Joueur(String pseudo, Terrain terrain){
 		super(pseudo) ;
 		this.terrain = terrain ;
 		this.gold = GOLD_INITIAL ;
 		this.pv = PV_INITIAUX ;
-		sesMonstres = new ArrayList<MonstreAllie>() ;
 	}
 	
 	
@@ -42,13 +36,14 @@ public class Joueur extends Utilisateur {
 	
 	public void majGold() {
 		gold += INCOME_INITIAL ;
-		for(MonstreAllie m : sesMonstres){
-			gold += m.getIncome() ;
-		}
 	}
 	
 	public Terrain getTerrain(){
 		return terrain ;
+	}
+	
+	public void augmenterGold(int valeur){
+		gold += valeur ;
 	}
 	
 	public boolean reduireGold(int valeur){

@@ -10,6 +10,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,8 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 import modele.Modele;
-import monstres.MonstreAdverse;
-import monstres.MonstreAllie;
+import monstres.Monstre;
 import terrain.Case;
 import terrain.Position;
 import tourelles.Tourelle;
@@ -32,6 +33,9 @@ public class Controleur {
 	private Modele modele ;
 	private Vue vue ;
 	private Timer timer ;
+	private boolean timerRunning ;
+	private boolean stopTimerNextTic ;
+	private int cptVague ;
 	
 	private Dessin caseSelectionnee ;
 	private String tourelleSelectionnee ;
@@ -40,8 +44,9 @@ public class Controleur {
 	
 	public Controleur(){
 		modele = new Modele("Ssoap") ;
-		vue = new Vue(Modele.HAUTEUR_TERRAIN, Modele.LARGEUR_TERRAIN, modele.getPseudoJoueur(), modele.getPvJoueur(), modele.getGoldJoueur(), modele.getPvAdversaire()) ;
-		
+		vue = new Vue(Modele.HAUTEUR_TERRAIN, Modele.LARGEUR_TERRAIN, modele.getPseudoJoueur(), modele.getPvJoueur(), modele.getGoldJoueur()) ;
+		timerRunning = false ;
+		stopTimerNextTic = false ;
 		hashPosCase = new HashMap<Position, Dessin>() ;
 		
 		hashTourelleBouton = new HashMap<String, JButton>() ;
@@ -66,7 +71,7 @@ public class Controleur {
 									caseCliquee.ajouter(tourelleSelectionnee) ;
 									hashTourelleBouton.get(tourelleSelectionnee).setText("Acheter") ;
 									tourelleSelectionnee = null ;
-									modele.definirCheminMonstres() ;
+									modele.definirCheminsMonstres() ;
 								}
 								else{
 									vue.message("Achat impossible", "Vous n'avez pas assez de gold !", JOptionPane.WARNING_MESSAGE) ;
@@ -146,21 +151,19 @@ public class Controleur {
 		}
 		
 		// Ajouter les monstres dans le store
-		vue.definirNbMonstres(MonstreAllie.NB_TYPES_MONSTRE) ;
-		for(int i = 0 ; i < MonstreAllie.NB_TYPES_MONSTRE ; i++){
-			String typeMonstre = MonstreAllie.getTypeMonstre(i) ;
-			JButton btnMonstre = vue.ajouterTypeMonstre(typeMonstre, infosMonstres(typeMonstre), new Dessin(typeMonstre, 40, 40)) ;
-			// Ajouter un listener sur le bouton
-			btnMonstre.addActionListener(new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent e){
-					/*modele.clickBtnAchatMonstre(typeMonstre) ;*/
+		vue.definirNbMonstres(Monstre.NB_TYPES_MONSTRE).addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				if(!timerRunning){
+					nouvelleVague() ;
 				}
-			});
+			}
+		});
+		
+		for(int i = 0 ; i < Monstre.NB_TYPES_MONSTRE ; i++){
+			String typeMonstre = Monstre.getTypeMonstre(i) ;
+			vue.ajouterTypeMonstre(typeMonstre, infosMonstres(typeMonstre), new Dessin(typeMonstre, 40, 40)) ;
 		}
-		
-		
-		
 		
 		
 		// Ajouter un listener sur la redimension de la fenetre
@@ -173,29 +176,70 @@ public class Controleur {
             }
         });
 		
-		modele.ajouterMonstreAdverse(new MonstreAdverse(100, 10, 10, modele.getPosSpawn()));
-		hashPosCase.get(new Position(1, 0)).ajouter("monstre_adverse");
-		modele.definirCheminMonstres() ;
-		
-		timer = new Timer() ;
-		timer.schedule(new TimerTask(){ @Override public void run(){ tic() ; } } , 1000, 1000);
-		
 		vue.setPreferredSize(new Dimension(1000, 700)) ;
 		vue.setVisible(true);
 		vue.pack() ;
 		vue.setLocationRelativeTo(null);
 	}
 	
+	private void nouvelleVague(){
+		stopTimerNextTic = false ;
+		timerRunning = true ;
+		cptVague = 0 ;
+		timer = new Timer() ;
+		timer.schedule(new TimerTask(){
+			@Override
+			public void run(){
+				tic() ;
+			}
+		}, 1000, 1000);
+	}
+	
 	private void tic(){
 		modele.majGold() ;
 		vue.majGoldJoueur(modele.getGoldJoueur());
-		//modele.faireAttaquerTourelles();
-		ArrayList<Couple<Position, Position>> oldAndNewPositions = modele.faireAvancerMonstres();
-		for(Couple<Position, Position> c : oldAndNewPositions){
-			hashPosCase.get(c.getT1()).supprimerForeground() ;
-			hashPosCase.get(c.getT1()).repaint();
-			hashPosCase.get(c.getT2()).ajouter("monstre_adverse") ;
-			hashPosCase.get(c.getT2()).repaint() ;
+		Set<Position> cles = hashPosCase.keySet();
+		Iterator<Position> it = cles.iterator() ;
+		while(it.hasNext()){
+			Dessin d = hashPosCase.get(it.next()) ;
+			d.supprimerImageMonstre();
+			d.repaint();
+		}
+		ArrayList<Couple<Position, String>> newPositionsTypesMonstre = modele.faireAvancerMonstres();
+		for(Couple<Position, String> c : newPositionsTypesMonstre){
+			hashPosCase.get(c.getT1()).ajouter(c.getT2()) ;
+			hashPosCase.get(c.getT1()).repaint() ;
+		}
+		modele.faireAttaquerTourelles();
+		
+		if(cptVague < 10){
+			Monstre m = null ;
+			int n = (int)(Math.random() * 3) ;
+			Position spawn = modele.randomSpawn() ;
+			switch(n){
+				case 0 :
+					m = new Monstre("monstre_puissant", spawn) ;
+					hashPosCase.get(spawn).ajouter("monstre_puissant");
+					hashPosCase.get(spawn).repaint() ;
+					break ;
+				default :
+					m = new Monstre("monstre_basique", spawn) ;
+					hashPosCase.get(spawn).ajouter("monstre_basique");
+					hashPosCase.get(spawn).repaint() ;
+					break ;
+			}
+			modele.ajouterMonstre(m);
+			modele.definirCheminsMonstres() ;
+		}
+		cptVague++ ;
+		
+
+		if(stopTimerNextTic){
+			timer.cancel() ;
+			timerRunning = false ;
+		}
+		if(modele.tousMonstresMorts()){
+			stopTimerNextTic = true ;
 		}
 	}
 	
@@ -245,7 +289,7 @@ public class Controleur {
 
 	private String infosMonstres(String typeMonstre){
 		
-		String infosBrutes = MonstreAllie.getInfosMonstre(typeMonstre) ;
+		String infosBrutes = Monstre.getInfosMonstre(typeMonstre) ;
 		
 		String infosFormatees = "<html>Type : " + typeMonstre + "<br>";
 	    int k = 0 ;

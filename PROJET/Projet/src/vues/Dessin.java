@@ -12,6 +12,7 @@ public class Dessin extends JLabel {
 	
 	private Image imageTerrain ;
 	private Image imageForeground ;
+	private String typeImageForeground ;
 	private String type ;
 	private int hauteur ;
 	private int largeur ;
@@ -28,8 +29,6 @@ public class Dessin extends JLabel {
 			case "sol_normal" : cheminImage = "sol_normal.jpg" ; break ;
 			case "spawn" : cheminImage = "sol_normal.jpg" ; break ;
 			case "base" : cheminImage = "base.png" ; break ;
-			case "morte" : cheminImage = "morte.png" ; break ;
-			case "sol_slow" : cheminImage = "sol_slow.jpg" ; break ;
 			case "sol_bonus_portee" : cheminImage = "sol_bonus_portee.jpg" ; break ;
 			case "sol_bonus_as" : cheminImage = "sol_bonus_as.jpg" ; break ;
 			
@@ -39,8 +38,6 @@ public class Dessin extends JLabel {
 			
 			case "tourelle_basique" : cheminImage = "tourelle_basique.png" ; break ;
 			case "tourelle_puissante" : cheminImage = "tourelle_puissante.png" ; break ;
-
-			case "monstre_adverse" : cheminImage = "monstre_basique.png" ; break ;
 			
 		}
 		
@@ -48,45 +45,10 @@ public class Dessin extends JLabel {
 			Image image = ImageIO.read(new File(cheminImage)).getScaledInstance(largeur, hauteur, Image.SCALE_DEFAULT);
 			if(type.startsWith("tourelle") || type.startsWith("monstre")){
 				this.imageForeground = image;
+				typeImageForeground = type ;
 			}
 			else{
-				this.imageTerrain = image;
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void redessiner(){
-		String cheminImage = "" ;
-		switch(type){
-			
-			case "sol_normal" : cheminImage = "sol_normal.jpg" ; break ;
-			case "spawn" : cheminImage = "sol_normal.jpg" ; break ;
-			case "base" : cheminImage = "base.png" ; break ;
-			case "morte" : cheminImage = "morte.png" ; break ;
-			case "sol_slow" : cheminImage = "sol_slow.jpg" ; break ;
-			case "sol_bonus_portee" : cheminImage = "sol_bonus_portee.jpg" ; break ;
-			case "sol_bonus_as" : cheminImage = "sol_bonus_as.jpg" ; break ;
-			
-			case "monstre_basique" : cheminImage = "monstre_basique.png" ; break ;
-			case "monstre_rapide" : cheminImage = "monstre_rapide.png" ; break ;
-			case "monstre_puissant" : cheminImage = "monstre_puissant.png" ; break ;
-			
-			case "tourelle_basique" : cheminImage = "tourelle_basique.png" ; break ;
-			case "tourelle_puissante" : cheminImage = "tourelle_puissante.png" ; break ;
-
-			case "monstre_adverse" : cheminImage = "monstre_basique.png" ; break ;
-			
-		}
-		
-		try {
-			Image image = ImageIO.read(new File(cheminImage)).getScaledInstance(largeur, hauteur, Image.SCALE_DEFAULT);
-			if(type.startsWith("tourelle") || type.startsWith("monstre")){
-				this.imageForeground = image;
-			}
-			else{
+				typeImageForeground = "" ;
 				this.imageTerrain = image;
 			}
 		}
@@ -102,8 +64,6 @@ public class Dessin extends JLabel {
 			case "sol_normal" : cheminImage = "sol_normal.jpg" ; break ;
 			case "spawn" : cheminImage = "sol_normal.jpg" ; break ;
 			case "base" : cheminImage = "base.png" ; break ;
-			case "morte" : cheminImage = "morte.png" ; break ;
-			case "sol_slow" : cheminImage = "sol_slow.jpg" ; break ;
 			case "sol_bonus_portee" : cheminImage = "sol_bonus_portee.jpg" ; break ;
 			case "sol_bonus_as" : cheminImage = "sol_bonus_as.jpg" ; break ;
 			
@@ -113,8 +73,6 @@ public class Dessin extends JLabel {
 			
 			case "tourelle_basique" : cheminImage = "tourelle_basique.png" ; break ;
 			case "tourelle_puissante" : cheminImage = "tourelle_puissante.png" ; break ;
-	
-			case "monstre_adverse" : cheminImage = "monstre_basique.png" ; break ;
 			
 		}
 		
@@ -122,6 +80,7 @@ public class Dessin extends JLabel {
 			Image image = ImageIO.read(new File(cheminImage)).getScaledInstance(largeur, hauteur, Image.SCALE_DEFAULT);
 			if(typeImage.startsWith("tourelle") || typeImage.startsWith("monstre")){
 				this.imageForeground = image;
+				typeImageForeground = typeImage ;
 			}
 			else{
 				this.imageTerrain = image;
@@ -144,8 +103,10 @@ public class Dessin extends JLabel {
 
 	}
 	
-	public void supprimerForeground(){
-		imageForeground = null ;
+	public void supprimerImageMonstre(){
+		if(typeImageForeground.startsWith("monstre")){
+			imageForeground = null ;
+		}
 	}
 	
 	@Override

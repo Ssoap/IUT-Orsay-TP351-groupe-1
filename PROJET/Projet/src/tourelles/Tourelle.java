@@ -2,7 +2,8 @@ package tourelles;
 
 import java.util.ArrayList;
 
-import monstres.MonstreAdverse;
+import monstres.Monstre;
+
 
 public class Tourelle {
 	
@@ -120,7 +121,7 @@ public class Tourelle {
 	}
 	
 	
-	public void attaquer(MonstreAdverse m){
+	public void attaquer(Monstre m){
 		m.blesser(dommages*attackSpeed) ;
 	}
 	
@@ -136,8 +137,7 @@ public class Tourelle {
 	public int getAS(){
 		return attackSpeed ;
 	}
-	
-	
+		
 	public String getType(){
 		return type ;
 	}

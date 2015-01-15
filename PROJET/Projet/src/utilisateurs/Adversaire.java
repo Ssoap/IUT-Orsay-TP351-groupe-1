@@ -2,32 +2,25 @@ package utilisateurs;
 
 import java.util.ArrayList;
 
-import monstres.MonstreAdverse;
-import terrain.Position;
-import couple.Couple;
+import monstres.Monstre;
 
-public class Adversaire extends Utilisateur{
+public class Adversaire{
 
-	private ArrayList<MonstreAdverse> sesMonstres ;
+	private ArrayList<Monstre> sesMonstres ;
 	
-	public Adversaire(String pseudo){
-		super(pseudo) ;
-		sesMonstres = new ArrayList<MonstreAdverse>() ;
+	public Adversaire(){
+		sesMonstres = new ArrayList<Monstre>() ;
 	}
 	
-	public void setPv(int pv){
-		this.pv = pv ;
-	}
-	
-	public ArrayList<MonstreAdverse> getSesMonstres(){
+	public ArrayList<Monstre> getSesMonstres(){
 		return sesMonstres ;
 	}
 	
-	public void addMonstre(MonstreAdverse m){
+	public void addMonstre(Monstre m){
 		sesMonstres.add(m) ;
 	}
 	
-	public void tuerMonstre(MonstreAdverse m){
+	public void tuerMonstre(Monstre m){
 		sesMonstres.remove(m) ;
 	}
 	
